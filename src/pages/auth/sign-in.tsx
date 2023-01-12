@@ -1,11 +1,24 @@
+import type { GetServerSideProps } from "next";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { api } from "../../utils/api";
+import { getProviders, signIn } from "next-auth/react";
+import { useRef } from "react";
+import { shouldRedirectInside } from "../../utils/shouldRedirect";
 
-const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+interface SignInProps {
+  providers: Awaited<ReturnType<typeof getProviders>>;
+}
+
+const SignIn: NextPage<SignInProps> = ({ providers }) => {
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  const signInHandler = (providerId: string) => {
+    setTimeout(() => {
+      btnRef.current?.blur();
+    }, 300);
+
+    void signIn(providerId, { callbackUrl: `${window.location.origin}` });
+  };
 
   return (
     <>
@@ -18,44 +31,39 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            Iniciar Sesi&oacute;n
-          </h1>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-            </p>
-            <AuthShowcase />
-          </div>
+        <h1 className="text-white">Iniciar Sesi&oacute;n</h1>
+        <div>
+          {Object.values(providers ?? []).map((provider) => {
+            return (
+              <button
+                key={provider.id}
+                ref={btnRef}
+                value={provider.id}
+                onClick={() => signInHandler(provider.id)}
+                className="border-spacing-2 rounded-md border-2 bg-white px-4 py-2 
+                transition-transform  hover:border-blue-600 hover:bg-gray-200 hover:ring-4 hover:ring-blue-200/50
+                focus:scale-95  focus:bg-gray-400"
+              >
+                Iniciar Sesi&oacute;n con {provider.name}!
+              </button>
+            );
+          })}
         </div>
       </main>
     </>
   );
 };
 
-export default Home;
+export default SignIn;
 
-const AuthShowcase: React.FC = () => {
-  const { data: sessionData } = useSession();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { redirect } = await shouldRedirectInside(context);
+  if (redirect) {
+    return { redirect };
+  }
 
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined }
-  );
-
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
-      </p>
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-    </div>
-  );
+  const providers = await getProviders();
+  return {
+    props: { providers },
+  };
 };
