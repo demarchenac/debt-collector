@@ -19,7 +19,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Cobra Diario | Iniciar Sesi&oacute;n</title>
+        <title>Cobra Diario | Inicio</title>
         <meta
           name="description"
           content="Aplicación para gestionar tus cobros."
