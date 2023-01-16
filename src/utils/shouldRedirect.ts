@@ -43,7 +43,7 @@ export const shouldRedirect = async (
   if (session) {
     return {
       redirect: {
-        destination: "/client/home",
+        destination: "/client/debts",
         permanent: false,
       },
     };
