@@ -11,7 +11,7 @@ import { AnimatePresence, motion } from "framer-motion";
 const links = [
   {
     path: "/client/debts",
-    text: "Los que me deben",
+    text: "Deudas",
     icon: <GiMoneyStack size={16} />,
   },
   {
@@ -56,6 +56,7 @@ export function Sidebar({ visible, onClose }: SidebarProps) {
           initial={{ x: "-300px", opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: "-300px", opacity: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <div
             onClick={onClose}
