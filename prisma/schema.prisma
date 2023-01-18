@@ -59,6 +59,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    contacts      Contact[]
 }
 
 model VerificationToken {
@@ -68,3 +69,40 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Contact {
+    id           String   @id @default(cuid())
+    indebtedToId String
+    name         String
+    email        String
+    phone        String
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+    indebtedTo   User     @relation(fields: [indebtedToId], references: [id])
+    // debts     Debt[]
+
+    @@unique([indebtedToId, email], name: "contactEmail")
+    @@unique([indebtedToId, phone], name: "contactPhone")
+}
+
+// model Debt {
+//     id        String   @id @default(cuid())
+//     contactId String
+//     amount    String
+//     currency  String
+//     due       String
+//     interest  Float
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+
+//     Contact Contact @relation(fields: [contactId], references: [id])
+
+//     @@unique([contactId])
+// }
+
+// model PaymentPlan {
+//     id   String @id @default(cuid())
+//     fees Int
+//     feeValue Int
+
+// }

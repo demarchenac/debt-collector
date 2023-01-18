@@ -52,17 +52,14 @@ export function Sidebar({ visible, onClose }: SidebarProps) {
     <AnimatePresence>
       {visible && (
         <motion.div
+          className="z-20"
           key="sidebar"
           initial={{ x: "-300px", opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: "-300px", opacity: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <div
-            onClick={onClose}
-            className="fixed top-0 left-0 flex h-screen w-9/12 flex-col rounded-r-3xl border-none bg-slate-900 shadow-sm md:w-4/12"
-            tabIndex={-1}
-          >
+          <div className="fixed top-0 left-0 z-20 flex h-screen w-9/12 flex-col rounded-r-3xl border-none bg-slate-900 shadow-sm md:w-4/12">
             {/* Heading */}
             <div className="flex items-center justify-between p-4">
               <h2 className="text-xl text-white">Men&uacute;</h2>
@@ -95,6 +92,7 @@ export function Sidebar({ visible, onClose }: SidebarProps) {
                       <Link
                         href={path}
                         className="flex items-center justify-center gap-1"
+                        onClick={onClose}
                       >
                         {icon} {text}
                       </Link>

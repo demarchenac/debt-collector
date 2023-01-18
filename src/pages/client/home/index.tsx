@@ -4,7 +4,7 @@ import Head from "next/head";
 import { useRef } from "react";
 import { shouldRedirectOutside } from "../../../utils/shouldRedirect";
 
-const Home: NextPage = () => {
+const HomePage: NextPage = () => {
   const btnRef = useRef<HTMLButtonElement>(null);
   const { data: sessionData } = useSession();
 
@@ -47,7 +47,7 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default HomePage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { redirect } = await shouldRedirectOutside(context);
