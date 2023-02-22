@@ -4,7 +4,7 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { CgSearchFound } from "react-icons/cg";
 import { api } from "../../../utils/api";
 import { shouldRedirectOutside } from "../../../utils/shouldRedirect";
-import { CircleButton } from "../../../components/AddButton";
+import { CircleButton } from "../../../components/CircleButton";
 import { MdGroupAdd } from "react-icons/md";
 import { useRouter } from "next/router";
 

@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { IoChevronBack } from "react-icons/io5";
-import { CircleButton } from "../AddButton";
+import { CircleButton } from "../CircleButton";
 import { ProfileImage } from "../Shared";
 
 interface HeaderProps {
