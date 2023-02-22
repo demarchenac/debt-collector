@@ -17,7 +17,7 @@ const DebtsPage: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1 className="text-3xl font-bold text-white">Inicio!</h1>
+      <h1 className="text-3xl font-bold text-white">Deudas!</h1>
       <h2 className="mb-4 text-white">
         {sessionData && (
           <span>Sesi&oacute;n iniciada como: {sessionData.user?.name}</span>

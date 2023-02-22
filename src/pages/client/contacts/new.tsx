@@ -8,19 +8,20 @@ import { CircleButton } from "../../../components/AddButton";
 import { MdGroupAdd } from "react-icons/md";
 import { useRouter } from "next/router";
 
-const ContactsPage: NextPage = () => {
+const NewContactPage: NextPage = () => {
   const { data } = api.contact.getUserContacts.useQuery();
-
   const router = useRouter();
 
   const onAddButtonClicked = () => {
+    console.log("loco que");
+
     void router.push("/client/contacts/new");
   };
 
   return (
     <>
       <Head>
-        <title>Cobra Diario | Contactos</title>
+        <title>Cobra Diario | Nuevo Contacto</title>
         <meta
           name="description"
           content="Aplicación para gestionar tus cobros."
@@ -28,7 +29,7 @@ const ContactsPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <h1 className="mb-2 flex gap-1 text-3xl font-bold text-white">
-        <BsFillPeopleFill size={36} /> Contactos
+        <BsFillPeopleFill size={36} /> Nuevo Contacto
       </h1>
       <div className="m-auto flex flex-col items-center justify-center">
         {data?.contacts.length === 0 ? (
@@ -39,16 +40,11 @@ const ContactsPage: NextPage = () => {
           <></>
         )}
       </div>
-      <CircleButton
-        Icon={MdGroupAdd}
-        onClick={onAddButtonClicked}
-        variant="add"
-      />
     </>
   );
 };
 
-export default ContactsPage;
+export default NewContactPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { redirect } = await shouldRedirectOutside(context);
