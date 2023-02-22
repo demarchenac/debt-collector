@@ -76,6 +76,8 @@ model Contact {
     name         String
     email        String
     phone        String
+    photoUrl     String
+    totalDebt    String   @default("0")
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt
     indebtedTo   User     @relation(fields: [indebtedToId], references: [id])
