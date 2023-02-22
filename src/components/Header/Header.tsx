@@ -19,7 +19,8 @@ export function Header({ onClick }: HeaderProps) {
 
   const isInForm = formPaths.some((path) => router.pathname.includes(path));
   const goBack = () => {
-    void router.back();
+    const lastPath = router.pathname.lastIndexOf("/");
+    void router.push(router.pathname.substring(0, lastPath));
   };
 
   return (
