@@ -73,10 +73,11 @@ model VerificationToken {
 model Contact {
     id           String   @id @default(cuid())
     indebtedToId String
-    name         String
+    firstName    String
+    lastName     String
     email        String
     phone        String
-    photoUrl     String
+    photoKey     String
     totalDebt    String   @default("0")
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt

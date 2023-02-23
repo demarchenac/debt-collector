@@ -13,6 +13,7 @@ export function FileUploadField<T extends FieldValues>({
   errors,
   hint,
   multiple = false,
+  accept = "*",
 }: {
   schema: z.ZodType<T>;
   register: UseFormRegister<T>;
@@ -21,6 +22,7 @@ export function FileUploadField<T extends FieldValues>({
   label: string;
   hint?: string;
   multiple?: boolean;
+  accept?: string;
 }) {
   const hasError = Boolean(errors[name]);
   const fieldError = errors[name]?.message as string;
@@ -46,6 +48,7 @@ export function FileUploadField<T extends FieldValues>({
         ${inputClasses}`}
         id={name}
         type="file"
+        accept={accept}
         multiple={multiple}
         aria-describedby={`${name}Hint`}
         aria-invalid={hasError ? "true" : "false"}

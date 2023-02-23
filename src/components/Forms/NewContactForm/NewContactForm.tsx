@@ -4,12 +4,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Field, FileUploadField } from "../Fields";
 import { Button } from "../../Button";
+import { api } from "../../../utils/api";
+import axios from "axios";
 
 const maxFileSize = 500000;
 const acceptedImageTypes = ["image/jpeg", "image/jpg", "image/png"];
 
 const validationSchema = z.object({
-  name: z.string().min(1, { message: "Campo 'Nombre' requerido" }),
+  firstName: z.string().min(1, { message: "Campo 'Nombre' requerido" }),
+  lastName: z.string().min(1, { message: "Campo 'Apellido' requerido" }),
   email: z
     .string()
     .min(1, { message: "Campo 'Correo' requerido" })
@@ -37,16 +40,41 @@ const validationSchema = z.object({
 type ValidationSchema = z.infer<typeof validationSchema>;
 
 export function NewContactForm() {
+  const { mutateAsync: postSignedUrl } =
+    api.image.postPreflightURL.useMutation();
+
+  const { mutate: addContact } = api.contact.addContact.useMutation();
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitted, isSubmitSuccessful },
   } = useForm<ValidationSchema>({
     resolver: zodResolver(validationSchema),
   });
 
-  const onSubmit: SubmitHandler<ValidationSchema> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<ValidationSchema> = async ({
+    photo,
+    ...data
+  }) => {
+    const image = photo.item(0);
+    if (!image) {
+      return;
+    }
+
+    const { uploadUrl, Key } = await postSignedUrl({
+      filename: image.name,
+      mimeType: image.type,
+    });
+
+    if (uploadUrl.length > 0) {
+      await axios.put(uploadUrl, image);
+    }
+
+    console.log({ image, uploadUrl, Key });
+    addContact({ ...data, photoKey: Key });
+    reset();
   };
 
   const formHasError = Object.entries(errors).length > 0;
@@ -61,9 +89,17 @@ export function NewContactForm() {
         schema={validationSchema}
         register={register}
         errors={errors}
-        name="name"
+        name="firstName"
         label="Nombre"
-        placeholder="Juanito Perez"
+        placeholder="Juanito"
+      />
+      <Field
+        schema={validationSchema}
+        register={register}
+        errors={errors}
+        name="lastName"
+        label="Apellido"
+        placeholder="Perez"
       />
       <Field
         schema={validationSchema}
@@ -89,6 +125,7 @@ export function NewContactForm() {
         name="photo"
         label="Foto"
         hint="PNG, JPG or JPEG (MAX. 5 MB)"
+        accept={acceptedImageTypes.join(",")}
       />
 
       <Button

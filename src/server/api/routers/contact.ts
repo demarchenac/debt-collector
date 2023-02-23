@@ -23,7 +23,27 @@ export const contactRouter = createTRPCRouter({
     return { contacts };
   }),
 
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
+  addContact: protectedProcedure
+    .input(
+      z.object({
+        firstName: z.string().min(1, { message: "Campo 'Nombre' requerido" }),
+        lastName: z.string().min(1, { message: "Campo 'Nombre' requerido" }),
+        email: z
+          .string()
+          .min(1, { message: "Campo 'Correo' requerido" })
+          .email({ message: "Formato de correo inválido" }),
+        phone: z.string().min(1, { message: "Campo 'Teléfono' requerido" }),
+        photoKey: z.string().min(1, { message: "Campo 'Foto' requerido" }),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const newContact = await ctx.prisma.contact.create({
+        data: {
+          ...input,
+          indebtedToId: ctx.session.user.id,
+        },
+      });
+
+      return { newContact };
+    }),
 });
