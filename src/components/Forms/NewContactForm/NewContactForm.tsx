@@ -2,8 +2,11 @@ import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Field } from "../Fields";
+import { Field, FileUploadField } from "../Fields";
 import { Button } from "../../Button";
+
+const maxFileSize = 500000;
+const acceptedImageTypes = ["image/jpeg", "image/jpg", "image/png"];
 
 const validationSchema = z.object({
   name: z.string().min(1, { message: "Campo 'Nombre' requerido" }),
@@ -11,8 +14,24 @@ const validationSchema = z.object({
     .string()
     .min(1, { message: "Campo 'Correo' requerido" })
     .email({ message: "Formato de correo inválido" }),
-  phone: z.string().min(1, { message: "Campo 'Telefono' requerido" }),
-  // photo: z.string().min(1, { message: "Campo 'Foto' requerido" }),
+  phone: z.string().min(1, { message: "Campo 'Teléfono' requerido" }),
+  photo: z
+    .custom<FileList>()
+    .refine((files) => files?.length === 1, "Campo 'Foto' requerido")
+    .refine((files) => {
+      if (!files) return false;
+      const file = files.item(0);
+      if (!file) return false;
+
+      return file.size <= maxFileSize;
+    }, "El tamaño máximo es de 5 MB.")
+    .refine((files) => {
+      if (!files) return false;
+      const file = files.item(0);
+      if (!file) return false;
+
+      return acceptedImageTypes.includes(file.type);
+    }, "Solo se aceptan los formatos .jpg, .jpeg, .png."),
 });
 
 type ValidationSchema = z.infer<typeof validationSchema>;
@@ -63,6 +82,15 @@ export function NewContactForm() {
         name="phone"
         label="Teléfono"
         placeholder="+57 (123) 456-7890"
+      />
+
+      <FileUploadField
+        schema={validationSchema}
+        register={register}
+        errors={errors}
+        name="photo"
+        label="Foto"
+        hint="PNG, JPG or JPEG (MAX. 5 MB)"
       />
 
       <Button
