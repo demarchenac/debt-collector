@@ -52,8 +52,6 @@ export function NewContactForm() {
   const formHasError = Object.entries(errors).length > 0;
   const formWasSubmitted = isSubmitSuccessful && isSubmitted;
 
-  console.log({ errors });
-
   return (
     <form
       className="flex flex-col"
