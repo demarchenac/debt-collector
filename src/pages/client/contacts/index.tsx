@@ -2,16 +2,20 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { CgSearchFound } from "react-icons/cg";
+import { MdGroupAdd } from "react-icons/md";
+import { useRouter } from "next/router";
 import { api } from "../../../utils/api";
 import { shouldRedirectOutside } from "../../../utils/shouldRedirect";
 import { CircleButton } from "../../../components/CircleButton";
-import { MdGroupAdd } from "react-icons/md";
-import { useRouter } from "next/router";
+import { ContactCard } from "../../../components/ContactCard";
 
 const ContactsPage: NextPage = () => {
   const { data } = api.contact.getUserContacts.useQuery();
 
   const router = useRouter();
+
+  const isEmpty = data?.contacts.length === 0;
+  const centerMessage = isEmpty ? "m-auto" : "";
 
   const onAddButtonClicked = () => {
     void router.push("/client/contacts/new");
@@ -30,13 +34,19 @@ const ContactsPage: NextPage = () => {
       <h1 className="mb-2 flex gap-1 text-3xl font-bold text-white">
         <BsFillPeopleFill size={36} /> Contactos
       </h1>
-      <div className="m-auto flex flex-col items-center justify-center">
-        {data?.contacts.length === 0 ? (
+      <div
+        className={`flex flex-col items-center justify-center ${centerMessage}`}
+      >
+        {isEmpty ? (
           <h2 className="flex items-center justify-center gap-1 text-white">
             <CgSearchFound size={20} /> No hay contactos, intenta crear uno!
           </h2>
         ) : (
-          <></>
+          <ul className="flex flex-col gap-2 py-4">
+            {data?.contacts.map((contact) => (
+              <ContactCard contact={contact} key={contact.id} />
+            ))}
+          </ul>
         )}
       </div>
       <CircleButton

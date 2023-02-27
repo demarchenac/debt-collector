@@ -7,7 +7,7 @@ import { Button } from "../../Button";
 import { api } from "../../../utils/api";
 import axios from "axios";
 
-const maxFileSize = 500000;
+const maxFileSize = 1000000 * 5;
 const acceptedImageTypes = ["image/jpeg", "image/jpg", "image/png"];
 
 const validationSchema = z.object({
@@ -25,6 +25,8 @@ const validationSchema = z.object({
       if (!files) return false;
       const file = files.item(0);
       if (!file) return false;
+
+      console.log({ size: file.size });
 
       return file.size <= maxFileSize;
     }, "El tamaño máximo es de 5 MB.")

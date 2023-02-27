@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { S3 } from "../../../utils/s3";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
@@ -20,7 +21,16 @@ export const contactRouter = createTRPCRouter({
       where: { indebtedToId: ctx.session.user.id },
     });
 
-    return { contacts };
+    const keys = contacts.map((contact) => contact.photoKey);
+
+    const { presignedUrls = [] } = await S3.getUserPresignedUrls(keys);
+
+    const contactsWithPhoto = contacts.map((contact, index) => ({
+      ...contact,
+      photo: presignedUrls[index] ?? "",
+    }));
+
+    return { contacts: contactsWithPhoto };
   }),
 
   addContact: protectedProcedure

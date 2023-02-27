@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { Layout } from "./Layout";
 
 export function MotionLayout({
-  key,
   children,
 }: {
   key: string;
@@ -10,7 +9,6 @@ export function MotionLayout({
 }) {
   return (
     <motion.div
-      key={key}
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}

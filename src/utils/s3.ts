@@ -1,6 +1,5 @@
 import {
   GetObjectCommand,
-  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -34,36 +33,26 @@ const uploadToS3 = async ({
   }
 };
 
-// const getImageKeysByUser = async (userId) => {
-//   const command = new ListObjectsV2Command({
-//     Bucket: BUCKET,
-//     Prefix: userId,
-//   });
+const getUserPresignedUrls = async (keys: string[]) => {
+  try {
+    const presignedUrls = await Promise.all(
+      keys.map((key) => {
+        const command = new GetObjectCommand({
+          Bucket: env.BUCKET_NAME,
+          Key: key,
+        });
 
-//   const { Contents = [] } = await s3.send(command);
-
-//   return Contents.sort(
-//     (a, b) => new Date(b.LastModified) - new Date(a.LastModified)
-//   ).map((image) => image.Key);
-// };
-
-// export const getUserPresignedUrls = async (userId) => {
-//   try {
-//     const imageKeys = await getImageKeysByUser(userId);
-
-//     const presignedUrls = await Promise.all(
-//       imageKeys.map((key) => {
-//         const command = new GetObjectCommand({ Bucket: BUCKET, Key: key });
-//         return getSignedUrl(s3, command, { expiresIn: 900 }); // default
-//       })
-//     );
-//     return { presignedUrls };
-//   } catch (error) {
-//     console.log(error);
-//     return { error };
-//   }
-// };
+        return getSignedUrl(s3, command, { expiresIn: 900 }); // default
+      })
+    );
+    return { presignedUrls };
+  } catch (error) {
+    console.log(error);
+    return { error, presignedUrls: [] };
+  }
+};
 
 export const S3 = {
   uploadToS3,
+  getUserPresignedUrls,
 };
