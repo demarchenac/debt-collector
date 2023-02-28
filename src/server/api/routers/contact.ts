@@ -38,6 +38,7 @@ export const contactRouter = createTRPCRouter({
       z.object({
         firstName: z.string().min(1, { message: "Campo 'Nombre' requerido" }),
         lastName: z.string().min(1, { message: "Campo 'Nombre' requerido" }),
+        document: z.string().min(3, { message: "Campo 'Documento' requerido" }),
         email: z
           .string()
           .min(1, { message: "Campo 'Correo' requerido" })

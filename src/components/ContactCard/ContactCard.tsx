@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
+import React from "react";
 import type { RouterOutputs } from "../../utils/api";
 import { CurrencyFormatter } from "../../utils/currencyFormatter";
 import { DateFormatter } from "../../utils/dateFormatter";
@@ -9,13 +11,19 @@ interface ContactCardProps {
   contact: Contact;
 }
 
-export function ContactCard({ contact }: ContactCardProps) {
+function ContactCard_NoMemo({ contact }: ContactCardProps) {
+  const router = useRouter();
   const { currency, locale } = CurrencyFormatter.format("1234567");
+
+  const handleContactCardClick = () => {
+    void router.push(`/client/contacts/${contact.phone}/detail`);
+  };
 
   return (
     <li
+      className="grid h-24 w-full grid-cols-[minmax(64px,_1fr)_2fr_minmax(95px,_1fr)] items-center justify-items-center rounded-md bg-slate-50 p-2 shadow-sm shadow-white"
       key={contact.id}
-      className="grid h-24 w-full grid-cols-[minmax(64px,_1fr)_2fr_minmax(95px,_1fr)] items-center justify-items-center rounded-md bg-slate-50 p-2 shadow-md"
+      onClick={handleContactCardClick}
     >
       <div className="h-full w-full p-1.5">
         <Image
@@ -42,3 +50,5 @@ export function ContactCard({ contact }: ContactCardProps) {
     </li>
   );
 }
+
+export const ContactCard = React.memo(ContactCard_NoMemo);

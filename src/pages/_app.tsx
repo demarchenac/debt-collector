@@ -2,7 +2,7 @@ import type { AppProps } from "next/app";
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { api } from "../utils/api";
 import { Header } from "../components/Header";
@@ -10,7 +10,7 @@ import { Header } from "../components/Header";
 import "../styles/globals.css";
 import { Sidebar } from "../components/Sidebar";
 import { AnimatePresence } from "framer-motion";
-import { MotionLayout } from "../components/Layout";
+import { MemoizedMotionLayout } from "../components/Layout";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -20,11 +20,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
   const [showSidebar, toggleSidebar] = useState(false);
 
   const openSidebar = () => toggleSidebar(true);
-  const closeSidebar = () => {
+  const closeSidebar = useCallback(() => {
     toggleSidebar(false);
-  };
+  }, []);
 
-  console.log({ session, showSidebar });
   return (
     <SessionProvider session={session}>
       <div className="min-screen flex flex-col bg-gradient-to-b  from-[#2e026d] to-[#15162c]">
@@ -36,9 +35,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
             initial={false}
             onExitComplete={() => window.scrollTo(0, 0)}
           >
-            <MotionLayout key={router.route}>
+            <MemoizedMotionLayout key={router.route}>
               <Component {...pageProps} />
-            </MotionLayout>
+            </MemoizedMotionLayout>
           </AnimatePresence>
         </div>
       </div>

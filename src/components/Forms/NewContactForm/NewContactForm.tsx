@@ -13,6 +13,7 @@ const acceptedImageTypes = ["image/jpeg", "image/jpg", "image/png"];
 const validationSchema = z.object({
   firstName: z.string().min(1, { message: "Campo 'Nombre' requerido" }),
   lastName: z.string().min(1, { message: "Campo 'Apellido' requerido" }),
+  document: z.string().min(3, { message: "Campo 'Documento' requerido" }),
   email: z
     .string()
     .min(1, { message: "Campo 'Correo' requerido" })
@@ -41,7 +42,7 @@ const validationSchema = z.object({
 
 type ValidationSchema = z.infer<typeof validationSchema>;
 
-export function NewContactForm() {
+export function NewContactForm({ onFormSubmit }: { onFormSubmit: () => void }) {
   const { mutateAsync: postSignedUrl } =
     api.image.postPreflightURL.useMutation();
 
@@ -77,6 +78,7 @@ export function NewContactForm() {
     console.log({ image, uploadUrl, Key });
     addContact({ ...data, photoKey: Key });
     reset();
+    onFormSubmit();
   };
 
   const formHasError = Object.entries(errors).length > 0;
@@ -102,6 +104,14 @@ export function NewContactForm() {
         name="lastName"
         label="Apellido"
         placeholder="Perez"
+      />
+      <Field
+        schema={validationSchema}
+        register={register}
+        errors={errors}
+        name="document"
+        label="Documento"
+        placeholder="12345"
       />
       <Field
         schema={validationSchema}

@@ -75,6 +75,7 @@ model Contact {
     indebtedToId String
     firstName    String
     lastName     String
+    document     String
     email        String
     phone        String
     photoKey     String
@@ -84,6 +85,7 @@ model Contact {
     indebtedTo   User     @relation(fields: [indebtedToId], references: [id])
     // debts     Debt[]
 
+    @@unique([indebtedToId, document], name: "contactDocument")
     @@unique([indebtedToId, email], name: "contactEmail")
     @@unique([indebtedToId, phone], name: "contactPhone")
 }

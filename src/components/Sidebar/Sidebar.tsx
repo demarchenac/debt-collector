@@ -1,12 +1,12 @@
-import { signOut, useSession } from "next-auth/react";
+import React, { useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useRef } from "react";
+import { signOut, useSession } from "next-auth/react";
+import { AnimatePresence, motion } from "framer-motion";
 import { IoClose } from "react-icons/io5";
 import { GoSignOut } from "react-icons/go";
 import { GiMoneyStack } from "react-icons/gi";
 import { BsFillPeopleFill } from "react-icons/bs";
-import { AnimatePresence, motion } from "framer-motion";
 
 const links = [
   {
@@ -26,7 +26,7 @@ interface SidebarProps {
   onClose: () => void;
 }
 
-export function Sidebar({ visible, onClose }: SidebarProps) {
+function Sidebar_NoMemo({ visible, onClose }: SidebarProps) {
   const session = useSession();
 
   const router = useRouter();
@@ -35,8 +35,6 @@ export function Sidebar({ visible, onClose }: SidebarProps) {
   if (session.status !== "authenticated") {
     return <></>;
   }
-
-  console.log({ visible });
 
   const signOutHandler = () => {
     onClose();
@@ -119,3 +117,5 @@ export function Sidebar({ visible, onClose }: SidebarProps) {
     </AnimatePresence>
   );
 }
+
+export const Sidebar = React.memo(Sidebar_NoMemo);

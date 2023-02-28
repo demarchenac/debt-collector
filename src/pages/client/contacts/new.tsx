@@ -1,16 +1,11 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { BsFillPeopleFill } from "react-icons/bs";
-import { CgSearchFound } from "react-icons/cg";
-import { api } from "../../../utils/api";
 import { shouldRedirectOutside } from "../../../utils/shouldRedirect";
-import { CircleButton } from "../../../components/CircleButton";
-import { MdGroupAdd } from "react-icons/md";
 import { useRouter } from "next/router";
 import { NewContactForm } from "../../../components/Forms/NewContactForm";
 
 const NewContactPage: NextPage = () => {
-  const { data } = api.contact.getUserContacts.useQuery();
   const router = useRouter();
 
   const onAddButtonClicked = () => {
@@ -33,7 +28,7 @@ const NewContactPage: NextPage = () => {
         <BsFillPeopleFill size={36} /> Nuevo Contacto
       </h1>
       <div className="flex flex-col  justify-center rounded-md bg-white px-4 py-6">
-        <NewContactForm />
+        <NewContactForm onFormSubmit={onAddButtonClicked} />
       </div>
     </>
   );

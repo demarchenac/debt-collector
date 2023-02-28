@@ -8,6 +8,7 @@ import { api } from "../../../utils/api";
 import { shouldRedirectOutside } from "../../../utils/shouldRedirect";
 import { CircleButton } from "../../../components/CircleButton";
 import { ContactCard } from "../../../components/ContactCard";
+import React from "react";
 
 const ContactsPage: NextPage = () => {
   const { data } = api.contact.getUserContacts.useQuery();
@@ -58,7 +59,9 @@ const ContactsPage: NextPage = () => {
   );
 };
 
-export default ContactsPage;
+const MemoizedContactsPage = React.memo(ContactsPage);
+
+export default MemoizedContactsPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { redirect } = await shouldRedirectOutside(context);
